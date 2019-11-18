@@ -1,0 +1,73 @@
+/*
+sources:
+png
+https://www.w3.org/TR/PNG/#11IHDR
+
+zlib
+https://www.ietf.org/rfc/rfc1950.txt
+
+deflate
+https://tools.ietf.org/html/rfc1951#page-5
+*/
+
+89 50 4e 47 	
+0d 0a 1a 0a  //header
+00 00 00 0d //chunk length (13)
+49 48 44 52  //IHDR chunk type
+00 00 00 15  //width (21)
+00 00 00 15  //height (21)
+01 //bit depth
+03 //color type (3)
+00 //compression method
+00 //filter method
+00 //interlace method
+1F 15 C4 89 //CRC
+00 00 00 06 //chunk length (2)
+50 4c 54 45  //PLTE chunk type 
+00 00 00 //pallette 1 (black)
+ff ff ff //pallette 2 (white)
+4F D7 7F 2C	//CRC
+00 00 00 02 //chunk length (2)
+74 52 4e 53   //tRNS chunk type 
+ff  //pallette 1
+00 //pallette 2 (transparent)
+56 6C 30 3A	//CRC
+
+
+
+//binary data
+0 //more blocks to decompress
+00 //raw data (no compression)
+00000 //rest of block is ignored
+00000000 00000000 //length of block in bytes (most significant byte last)
+11111111 11111111 //1s complement of length 
+
+
+00 00 00 00 //chunk length (0)
+49 45 4E 44 // IEND chunk type (end of image)
+AE 42 60 82 //CRC
+
+
+// test image
+1 1 1 1 1 1 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1
+1 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+1 0 1 1 1 0 1 0 0 0 0 0 0 0 1 0 1 1 1 0 1
+1 0 1 1 1 0 1 0 0 0 0 0 0 0 1 0 1 1 1 0 1
+1 0 1 1 1 0 1 0 0 0 0 0 0 0 1 0 1 1 1 0 1
+1 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 1
+1 1 1 1 1 1 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
