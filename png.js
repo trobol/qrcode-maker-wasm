@@ -70,7 +70,7 @@ for (let a of qr)
 
 const png = new PNG(21, 21, bitmap);
 const buffer = png.toBuffer();
-console.log(qr);
+console.log(png.chunks[2].compress());
 
 const fs = require('fs');
 

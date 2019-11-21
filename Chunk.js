@@ -1,4 +1,4 @@
-
+const BinaryBuffer = require('./BinaryBuffer');
 
 function toBuffer(buffer) {
 	buffer.writeInt32(this.size);
@@ -60,8 +60,73 @@ function IDAT(scanlines) {
 	for (let line of this.scanlines)
 		if (line.length != count)
 			throw "all scan lines must have equal length";
+	
 }
 
+/*
+111 - 7
+010 - 2
+000 - 0
+1101 - 13
+1011 - 11
+1010 - 10
+1000 - 8
+0111 - 7
+0010 - 2
+
+0110
+11001
+
+*/
+function encode(chars, str, node) {
+	if(node[0] instanceof Array)
+		encode(chars, str+'0', node[0]);
+	else
+		chars.push({char:node[0], str:str +'0'});
+	if(node[1] instanceof Array)
+		encode(chars, str+'1', node[1]);
+	else
+		chars.push({char:node[1], str:str +'1'});
+}
+function calcChars(node) {
+	const chars = [];
+	encode(chars, '', node);
+	return chars;
+}
+
+function createTree(keys) {
+
+	const nodes = Object.entries(keys).map(v => ({v:v[0], o:v[1]}));
+	while(nodes.length > 1) {
+		nodes.sort((a, b) => b[1] - a[1]);
+		let a = nodes.pop();
+		let b = nodes.pop();
+		nodes.push([a, b]);
+	}
+	return nodes[0];
+}
+
+IDAT.prototype.compress = function() {
+	const buffer = new BinaryBuffer();
+	for (let line of this.scanlines) {
+		buffer.writeBits(line);
+		buffer.clearByte();
+	}
+	const keys = {};
+	for(let b of buffer.buffer) {
+		if(keys[b]) {
+			keys[b] ++;
+		} else {
+			keys[b] = 1;
+		}
+	}
+	const keyEntries = Object.entries(keys);
+	keyEntries.sort((a, b) =>  b[1] - a[1]);
+	console.log('Buffer Length', buffer.length());
+	console.log('Buffer', buffer.buffer);
+	console.log('Keys Entries', keyEntries, keyEntries.length);
+	console.log('Tree', calcChars(createTree(keys)));
+}
 
 //assuming no compression
 IDAT.prototype.toBuffer = function (buffer) {
@@ -103,10 +168,13 @@ IDAT.prototype.bufferData = function (buffer) {
 	buffer.write(buffer.read(buffer.length() - 2) ^ 0xff);
 	buffer.write(buffer.read(buffer.length() - 2) ^ 0xff);
 	const start = buffer.length();
+
+
 	for (let line of this.scanlines) {
 		buffer.writeBits(line);
 		buffer.clearByte();
 	}
+
 	let a = 1;
 	let b = 0;
 	console.log(start);
